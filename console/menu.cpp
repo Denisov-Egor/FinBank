@@ -1,8 +1,11 @@
 #include <iostream>
 #include <string>
 #include <limits>
+#include <vector>
 
 #include "menu.h"
+
+std::vector<Account> accounts;
 
 std::string inputFullName()
 {
@@ -123,12 +126,166 @@ void showProfile(
   std::cout << "Email: " << email << "\n";
 }
 
+void showAccounts()
+{
+  std::cin.ignore();
+ 
+  Account account;
+
+  std::cout << "Введите номер счета: ";
+  std::getline(std::cin, account.accountNumber);
+
+  std::cout << "Введите тип счёта: ";
+  std::getline(std::cin, account.accountType);
+
+  std::cout << "Введите валюту: ";
+  std::getline(std::cin, account.currency);
+
+  while (true)
+  {
+    std::cout << "Введите баланс: ";
+    std::cin >> account.balance;
+
+    if (std::cin.fail())
+    {
+      std::cin.clear();
+      std::cin.ignore(
+        std::numeric_limits<std::streamsize>::max(), '\n'
+      );
+
+      std::cout << "Ошибка: баланс должен быть числом.\n";
+      continue;
+    }
+
+    if (account.balance < 0)
+    {
+      std::cout << "Ошибка: баланс не может быть меньше 0.\n";
+      continue;
+    }
+
+    break;
+  }
+
+  std::cin.ignore();
+
+  std::cout << "Введите статус счёта: ";
+  std::getline(std::cin, account.status);
+
+  accounts.push_back(account);
+
+}
+
+void accountMenu()
+{
+  int choice;
+
+  do
+  {
+    std::cout << 
+    R"(
+      ========================
+      МОИ СЧЕТА
+      ========================
+      
+      1. Создать счёт
+      2. Показать счета
+      3. Выбрать счёт
+      4. Вернуться
+      
+      ========================
+      Выберите действие:
+      )";
+      
+    std::cin >> choice;
+
+    switch (choice)
+    {
+    case 1:
+      showAccounts();
+      break;
+    
+    case 2:
+      displayAccounts();
+      break;
+
+    case 3:
+      selectAccount();
+      break;
+
+    case 4:
+      std::cout << "Возврат в главное меню.\n";
+      break;
+    
+    default:
+     std::cout << "Неверный пункт меню.\n";
+      break;
+    }
+  } while (choice != 4);
+  
+}
+
+void displayAccounts()
+{
+  std::cout << "\n===== МОИ СЧЕТА =====\n";
+
+  if (accounts.empty())
+  {
+    std::cout << "У вас нет открытых счетов.\n";
+    return;
+  }
+
+  for (const Account& account : accounts)
+  {
+    std::cout << "\nНомер: " << account.accountNumber << "\n";
+    std::cout << "Тип: " << account.accountType << "\n";
+    std::cout << "Валюта: " << account.currency << "\n";
+    std::cout << "Баланс: " << account.balance << "\n";
+    std::cout << "Статус: " << account.status << "\n";
+  }
+}
+
+void selectAccount()
+{
+  int choice;
+
+  if (accounts.empty())
+  {
+    std::cout << "У вас нет открытых счетов.";
+    return;
+  }
+
+  for (int i = 0; i < accounts.size(); i++)
+  {
+    std::cout << i + 1 << ". ";
+    std::cout << accounts[i].accountNumber << "\n";
+  }
+  
+  std::cout << "Выберите счёт: ";
+  std::cin >> choice;
+
+  if (choice < 1 || choice > accounts.size())
+  {
+    std::cout << "Неверный номер счёта.\n";
+    return;
+  }
+
+  int index = choice - 1;
+
+  std::cout << "\n===== ВЫБРАННЫЙ СЧЁТ =====\n"; 
+  std::cout << "Номер: " << accounts[index].accountNumber << "\n"; 
+  std::cout << "Тип: " << accounts[index].accountType << "\n"; 
+  std::cout << "Валюта: " << accounts[index].currency << "\n"; 
+  std::cout << "Баланс: " << accounts[index].balance << "\n"; 
+  std::cout << "Статус: " << accounts[index].status << "\n";
+}
+
 void showMenu(
   const std::string& fullName,
   int age,
   const std::string& phone,
   const std::string& email
 )
+
 {
   int choice;
 
@@ -177,7 +334,7 @@ void showMenu(
         break;
 
       case 2:
-        std::cout << "Открываем раздел «Мои счета».\n";
+        accountMenu();
         break;
 
       case 3:

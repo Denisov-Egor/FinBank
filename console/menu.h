@@ -22,5 +22,18 @@ void showMenu(
   const std::string& email
 );
 
+void showAccounts();
+void accountMenu();
+void displayAccounts();
+void selectAccount();
+
+struct Account
+{
+  std::string accountNumber;
+  std::string accountType;
+  std::string currency;
+  double balance;
+  std::string status;
+};
 
 #endif
