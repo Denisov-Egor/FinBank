@@ -396,13 +396,121 @@ void selectedAccountMenu(int index)
   
 }
 
+void transferMoney()
+{
+  int senderChoice;
+  int receiverChoice;
+  double amount;
+
+  if (accounts.size() < 2)
+  {
+    std::cout << "\nДля перевода необходимо иметь минимум два счёта.\n";
+    return;
+  }
+
+  std::cout << "\n===== ПЕРЕВОД ДЕНЕЖНЫХ СРЕДСТВ =====\n";
+
+  std::cout << "\nДоступные счета:\n";
+
+  for (int i = 0; i < accounts.size(); i++)
+  {
+    std::cout << i + 1 << ". "
+              << accounts[i].accountNumber
+              << " | Баланс: "
+              << accounts[i].balance
+              << " "
+              << accounts[i].currency
+              << "\n";
+  }
+
+  std::cout << "\nВыберите счёт отправителя: ";
+  std::cin >> senderChoice;
+
+  if (senderChoice < 1 || senderChoice > accounts.size())
+  {
+    std::cout << "Ошибка: неверный счёт отправителя.\n";
+    return;
+  }
+
+  std::cout << "Выберите счёт получателя: ";
+  std::cin >> receiverChoice;
+
+  if (receiverChoice < 1 || receiverChoice > accounts.size())
+  {
+    std::cout << "Ошибка: неверный счёт получателя.\n";
+    return;
+  }
+
+  if (senderChoice == receiverChoice)
+  {
+    std::cout << "Ошибка: нельзя переводить деньги на тот же счёт.\n";
+    return;
+  }
+
+  std::cout << "Введите сумму перевода: ";
+  std::cin >> amount;
+
+  if (std::cin.fail())
+  {
+    std::cin.clear();
+    std::cin.ignore(
+      std::numeric_limits<std::streamsize>::max(), '\n'
+    );
+
+    std::cout << "Ошибка: сумма должна быть числом.\n";
+    return;
+  }
+
+  if (amount <= 0)
+  {
+    std::cout << "Ошибка: сумма перевода должна быть больше 0.\n";
+    return;
+  }
+
+  int senderIndex = senderChoice - 1;
+  int receiverIndex = receiverChoice - 1;
+
+  if (amount > accounts[senderIndex].balance)
+  {
+    std::cout << "Ошибка: недостаточно средств на счёте отправителя.\n";
+    std::cout << "Текущий баланс: "
+              << accounts[senderIndex].balance
+              << "\n";
+    return;
+  }
+
+  accounts[senderIndex].balance -= amount;
+  accounts[receiverIndex].balance += amount;
+
+  std::cout << "\nПеревод успешно выполнен.\n";
+
+  std::cout << "Счёт отправителя: "
+            << accounts[senderIndex].accountNumber
+            << "\n";
+
+  std::cout << "Счёт получателя: "
+            << accounts[receiverIndex].accountNumber
+            << "\n";
+
+  std::cout << "Сумма перевода: "
+            << amount
+            << "\n";
+
+  std::cout << "Новый баланс отправителя: "
+            << accounts[senderIndex].balance
+            << "\n";
+
+  std::cout << "Новый баланс получателя: "
+            << accounts[receiverIndex].balance
+            << "\n";
+}
+
 void showMenu(
   const std::string& fullName,
   int age,
   const std::string& phone,
   const std::string& email
 )
-
 {
   int choice;
 
@@ -463,7 +571,7 @@ void showMenu(
         break;
 
       case 5:
-        std::cout << "Открываем раздел «Переводы».\n";
+        transferMoney();
         break;
 
       case 6:

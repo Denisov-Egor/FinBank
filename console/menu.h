@@ -27,6 +27,7 @@ void accountMenu();
 void displayAccounts();
 void selectAccount();
 void selectedAccountMenu(int index);
+void transferMoney();
 
 struct Account
 {
