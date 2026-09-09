@@ -277,6 +277,123 @@ void selectAccount()
   std::cout << "Валюта: " << accounts[index].currency << "\n"; 
   std::cout << "Баланс: " << accounts[index].balance << "\n"; 
   std::cout << "Статус: " << accounts[index].status << "\n";
+  
+  selectedAccountMenu(index);
+}
+
+void selectedAccountMenu(int index)
+{
+  int choice;
+
+  do
+  {
+    std::cout <<
+    R"(
+    ===== МОЙ СЧЁТ =====
+  
+    1. Просмотреть счёт
+    2. Пополнить
+    3. Снять деньги
+    4. Назад
+  
+    Выберите действие:
+    )";
+
+    std::cin >> choice;
+
+    switch (choice)
+    {
+    case 1:
+      std::cout << "\n===== ИНФОРМАЦИЯ О СЧЁТЕ =====\n";
+      std::cout << "Номер: " << accounts[index].accountNumber << "\n";
+      std::cout << "Тип: " << accounts[index].accountType << "\n";
+      std::cout << "Валюта: " << accounts[index].currency << "\n";
+      std::cout << "Баланс: " << accounts[index].balance << "\n";
+      std::cout << "Статус: " << accounts[index].status << "\n";
+      break;
+
+    case 2:
+    {
+      double amount;
+
+      std::cout << "Введите сумму пополнения: ";
+      std::cin >> amount;
+
+      if (std::cin.fail())
+      {
+        std::cin.clear();
+        std::cin.ignore(
+          std::numeric_limits<std::streamsize>::max(), '\n'
+        );
+
+        std::cout << "Ошибка: сумма должна быть числом.\n";
+        break;
+      }
+
+      if (amount <= 0)
+      {
+        std::cout << "Ошибка: сумма пополнения должна быть больше 0.\n";
+        break;
+      }
+
+      accounts[index].balance += amount;
+
+      std::cout << "Счёт успешно пополнен.\n";
+      std::cout << "Новый баланс: " << accounts[index].balance << "\n";
+      break;
+    }
+
+    case 3:
+    {
+      double amount;
+
+      std::cout << "Введите сумму снятия: ";
+      std::cin >> amount;
+
+      if (std::cin.fail())
+      {
+        std::cin.clear();
+        std::cin.ignore(
+          std::numeric_limits<std::streamsize>::max(), '\n'
+        );
+
+        std::cout << "Ошибка: сумма должна быть числом.\n";
+        break;
+      }
+
+      if (amount <= 0)
+      {
+        std::cout << "Ошибка: сумма снятия должна быть больше 0.\n";
+        break;
+      }
+
+      if (amount > accounts[index].balance)
+      {
+        std::cout << "Ошибка: недостаточно средств на счёте.\n";
+        std::cout << "Текущий баланс: "
+                  << accounts[index].balance << "\n";
+        break;
+      }
+
+      accounts[index].balance -= amount;
+
+      std::cout << "Деньги успешно сняты.\n";
+      std::cout << "Новый баланс: "
+                << accounts[index].balance << "\n";
+
+      break;
+    }
+
+    case 4:
+      std::cout << "Возврат.\n";
+      break;
+    
+    default:
+      std::cout << "Неверный пункт меню.\n";
+      break;
+    }
+  } while (choice != 4);
+  
 }
 
 void showMenu(

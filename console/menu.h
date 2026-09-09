@@ -26,6 +26,7 @@ void showAccounts();
 void accountMenu();
 void displayAccounts();
 void selectAccount();
+void selectedAccountMenu(int index);
 
 struct Account
 {
