@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Переводы — FinBank</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a class="logo" href="index.html"><span class="logo__icon">🏦</span><span class="logo__bankname">FinBank</span></a>
+      <nav class="nav" id="nav">
+        <a class="nav__btn" href="index.html">Главная</a>
+        <a class="nav__btn" href="deposits.html">Вклады</a>
+        <a class="nav__btn" href="accounts.html">Счета</a>
+        <a class="nav__btn" href="cards.html">Карты</a>
+        <a class="nav__btn" href="credits.html">Кредиты</a>
+        <a class="nav__btn active" href="transfers.html">Переводы</a>
+        <a class="nav__btn" href="payments.html">Платежи</a>
+      </nav>
+      <button class="burger" id="burger" aria-label="Меню">☰</button>
+      <div class="userbox hidden" id="userbox">
+        <span class="userbox__name" id="userbox-name"></span>
+        <button class="btn btn--small userbox__logout" id="btn-logout" type="button">Выйти</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main">
+    <h2 class="tab-title">Переводы денежных средств</h2>
+    <div class="two-cols">
+      <div class="card">
+        <h3>Новый перевод</h3>
+        <form id="transfer-form" class="form" novalidate>
+          <label class="form__field">
+            <span>Списать со счёта<span id="transfer-from-bal"></span></span>
+            <select id="transfer-from"></select>
+          </label>
+          <label class="form__field">
+            <span>Куда</span>
+            <select id="transfer-target-type">
+              <option value="own">Мой другой счёт</option>
+              <option value="external">Другому клиенту банка</option>
+            </select>
+          </label>
+          <label class="form__field" id="field-transfer-to">
+            <span>Счёт получателя</span>
+            <select id="transfer-to-own"></select>
+          </label>
+          <label class="form__field hidden" id="field-transfer-external">
+            <span>Получатель (клиент банка)</span>
+            <select id="transfer-to-external"></select>
+            <small>Перевод зачисляется на рублёвый счёт получателя</small>
+          </label>
+          <label class="form__field">
+            <span>Сумма</span>
+            <input type="number" id="transfer-amount" min="1" step="100" value="1000" required>
+          </label>
+          <label class="form__field">
+            <span>Комментарий</span>
+            <input type="text" id="transfer-comment" placeholder="Назначение платежа" maxlength="80">
+          </label>
+          <button type="submit" class="btn btn--accent btn--full">Перевести</button>
+        </form>
+      </div>
+      <div class="card">
+        <h3>История переводов</h3>
+        <div id="transfer-list" class="list"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 «FinBank». Учебный проект по плану: приём вкладов, открытие и ведение счетов, кредитование, переводы денежных средств.</p>
+      <p class="footer__note">Данные хранятся локально в вашем браузере (localStorage) и служат для демонстрации.</p>
+    </div>
+  </footer>
+
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/pages/home.js"></script>
+  <script src="js/pages/transfers.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

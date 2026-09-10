@@ -1,0 +1,228 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FinBank — главная</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a class="logo" href="index.html"><span class="logo__icon">🏦</span><span class="logo__bankname">FinBank</span></a>
+      <nav class="nav" id="nav">
+        <a class="nav__btn active" href="index.html">Главная</a>
+        <a class="nav__btn" href="deposits.html">Вклады</a>
+        <a class="nav__btn" href="accounts.html">Счета</a>
+        <a class="nav__btn" href="cards.html">Карты</a>
+        <a class="nav__btn" href="credits.html">Кредиты</a>
+        <a class="nav__btn" href="transfers.html">Переводы</a>
+        <a class="nav__btn" href="payments.html">Платежи</a>
+      </nav>
+      <button class="burger" id="burger" aria-label="Меню">☰</button>
+      <div class="userbox hidden" id="userbox">
+        <span class="userbox__name" id="userbox-name"></span>
+        <button class="btn btn--small userbox__logout" id="btn-logout" type="button">Выйти</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main">
+
+    <!-- ================= ВХОД / РЕГИСТРАЦИЯ ================= -->
+    <section id="screen-auth" class="hidden">
+      <div class="auth">
+        <div class="auth__card">
+          <div class="auth__logo">🏦</div>
+          <h2>FinBank</h2>
+          <p class="auth__subtitle">Интернет-банк · войдите или зарегистрируйтесь</p>
+
+          <div class="auth__tabs">
+            <button class="auth__tab active" type="button" data-auth="login">Вход</button>
+            <button class="auth__tab" type="button" data-auth="register">Регистрация</button>
+            <button class="auth__tab" type="button" data-auth="employee">Сотрудник</button>
+          </div>
+
+          <form class="form" id="login-form" novalidate>
+            <label class="form__field">
+              <span>Email</span>
+              <input type="email" id="login-email" placeholder="you@mail.ru" required>
+            </label>
+            <label class="form__field">
+              <span>Пароль</span>
+              <input type="password" id="login-pass" required>
+            </label>
+            <button type="submit" class="btn btn--accent btn--full">Войти</button>
+            <p class="auth__hint">Демо-доступ: <code>demo@bank.ru</code> / <code>demo123</code></p>
+          </form>
+
+          <form class="form hidden" id="register-form" novalidate>
+            <label class="form__field">
+              <span>ФИО</span>
+              <input type="text" id="reg-name" placeholder="Иванов Иван Иванович" required>
+            </label>
+            <label class="form__field">
+              <span>Email</span>
+              <input type="email" id="reg-email" placeholder="you@mail.ru" required>
+            </label>
+            <label class="form__field">
+              <span>Телефон</span>
+              <input type="tel" id="reg-phone" placeholder="+7 (900) 000-00-00" required>
+            </label>
+            <label class="form__field">
+              <span>Пароль (не менее 6 символов)</span>
+              <input type="password" id="reg-pass" minlength="6" required>
+            </label>
+            <label class="form__field">
+              <span>Повторите пароль</span>
+              <input type="password" id="reg-pass2" required>
+            </label>
+            <button type="submit" class="btn btn--accent btn--full">Зарегистрироваться</button>
+          </form>
+          <form class="form hidden" id="employee-form" novalidate>
+            <label class="form__field">
+              <span>Логин сотрудника</span>
+              <input type="text" id="emp-login" placeholder="admin@bank.ru" required>
+            </label>
+            <label class="form__field">
+              <span>Пароль</span>
+              <input type="password" id="emp-pass" required>
+            </label>
+            <button type="submit" class="btn btn--accent btn--full">Войти в систему</button>
+            <p class="auth__hint">Демо-доступы сотрудников:<br>
+              <code>admin@bank.ru / admin123</code> — администратор<br>
+              <code>manager@bank.ru / manager123</code> — менеджер<br>
+              <code>cashier@bank.ru / cash123</code> — кассир<br>
+              <code>credit@bank.ru / credit123</code> — кредитный специалист<br>
+              <code>support@bank.ru / support123</code> — поддержка<br>
+              <code>security@bank.ru / security123</code> — безопасность<br>
+              <code>accountant@bank.ru / acc123</code> — бухгалтер</p>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= ГЛАВНАЯ (после входа) ================= -->
+    <div id="screen-app" class="hidden">
+
+      <section>
+        <div class="hero">
+          <h1>Ваши деньги работают,<br>пока вы отдыхаете</h1>
+          <p>Вклады · Счета · Кредиты · Переводы — все банковские услуги в одном месте по плану проекта.</p>
+          <div class="hero__actions">
+            <button class="btn btn--accent" data-page="deposits">Открыть вклад</button>
+            <button class="btn btn--outline" data-page="credits">Рассчитать кредит</button>
+          </div>
+        </div>
+
+        <div class="stats">
+          <div class="stat-card">
+            <div class="stat-card__label">Всего на счетах</div>
+            <div class="stat-card__value" id="stat-balance">0 ₽</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__label">Вклады (сумма)</div>
+            <div class="stat-card__value" id="stat-deposits">0 ₽</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__label">Долг по кредитам</div>
+            <div class="stat-card__value" id="stat-credits">0 ₽</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__label">Переводы (всего)</div>
+            <div class="stat-card__value" id="stat-transfers">0 ₽</div>
+          </div>
+        </div>
+
+        <div class="services">
+          <h2>Расходы по месяцам</h2>
+          <div class="card">
+            <div id="monthly-expenses"></div>
+          </div>
+        </div>
+
+        <div class="services">
+          <h2>Мои карты</h2>
+          <div class="cards-grid" id="home-cards"></div>
+        </div>
+
+        <div class="services">
+          <h2>Услуги банка</h2>
+          <div class="services__grid">
+            <button class="service-card" data-page="deposits">
+              <div class="service-card__icon">💰</div>
+              <h3>Приём вкладов и депозитов</h3>
+              <p>Ставки до 14% годовых. Сберегайте и приумножайте капитал.</p>
+              <span class="service-card__link">Открыть вклад →</span>
+            </button>
+            <button class="service-card" data-page="accounts">
+              <div class="service-card__icon">📒</div>
+              <h3>Открытие и ведение счетов</h3>
+              <p>Текущие, карточные, сберегательные и валютные счета.</p>
+              <span class="service-card__link">Открыть счёт →</span>
+            </button>
+            <button class="service-card" data-page="credits">
+              <div class="service-card__icon">💳</div>
+              <h3>Кредитование</h3>
+              <p>Потребительские, автокредиты, ипотека. Платежи считает калькулятор.</p>
+              <span class="service-card__link">Рассчитать →</span>
+            </button>
+            <button class="service-card" data-page="transfers">
+              <div class="service-card__icon">🔄</div>
+              <h3>Переводы денежных средств</h3>
+              <p>Между своими счетами и другим клиентам банка без комиссии.</p>
+              <span class="service-card__link">Перевести →</span>
+            </button>
+            <button class="service-card" data-page="payments">
+              <div class="service-card__icon">🧾</div>
+              <h3>Оплата услуг</h3>
+              <p>Мобильная связь, интернет, ЖКХ, транспорт и развлечения — в пару кликов.</p>
+              <span class="service-card__link">Оплатить →</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="services" id="support-section">
+          <h2>Поддержка клиентов</h2>
+          <div class="two-cols">
+            <div class="card">
+              <h3>Задать вопрос банку</h3>
+              <form id="ticket-form" class="form" novalidate>
+                <label class="form__field">
+                  <span>Тема</span>
+                  <input type="text" id="ticket-subject" placeholder="Например: Проблема с переводом" maxlength="60" required>
+                </label>
+                <label class="form__field">
+                  <span>Сообщение</span>
+                  <textarea id="ticket-message" rows="3" placeholder="Опишите ваш вопрос" maxlength="500" required></textarea>
+                </label>
+                <button type="submit" class="btn btn--accent btn--full">Отправить в поддержку</button>
+              </form>
+            </div>
+            <div class="card">
+              <h3>Мои обращения</h3>
+              <div id="ticket-list" class="list"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 «FinBank». Учебный проект по плану: приём вкладов, открытие и ведение счетов, кредитование, переводы денежных средств.</p>
+      <p class="footer__note">Данные хранятся локально в вашем браузере (localStorage) и служат для демонстрации.</p>
+    </div>
+  </footer>
+
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/pages/home.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

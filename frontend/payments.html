@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Платежи — FinBank</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a class="logo" href="index.html"><span class="logo__icon">🏦</span><span class="logo__bankname">FinBank</span></a>
+      <nav class="nav" id="nav">
+        <a class="nav__btn" href="index.html">Главная</a>
+        <a class="nav__btn" href="deposits.html">Вклады</a>
+        <a class="nav__btn" href="accounts.html">Счета</a>
+        <a class="nav__btn" href="cards.html">Карты</a>
+        <a class="nav__btn" href="credits.html">Кредиты</a>
+        <a class="nav__btn" href="transfers.html">Переводы</a>
+        <a class="nav__btn active" href="payments.html">Платежи</a>
+      </nav>
+      <button class="burger" id="burger" aria-label="Меню">☰</button>
+      <div class="userbox hidden" id="userbox">
+        <span class="userbox__name" id="userbox-name"></span>
+        <button class="btn btn--small userbox__logout" id="btn-logout" type="button">Выйти</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main">
+    <h2 class="tab-title">Оплата услуг</h2>
+
+    <div class="two-cols">
+      <div class="card">
+        <h3>Выберите услугу</h3>
+        <div class="cat-tabs" id="pay-cats"></div>
+        <div class="prov-grid" id="pay-providers"></div>
+
+        <form id="payment-form" class="form" novalidate>
+          <div class="form__note" id="pay-provider-info"></div>
+          <label class="form__field">
+            <span id="pay-target-label">Номер</span>
+            <input type="text" id="pay-target" placeholder="">
+          </label>
+          <label class="form__field">
+            <span>Сумма платежа (₽)</span>
+            <input type="number" id="pay-amount" min="10" step="10" placeholder="Например: 300">
+          </label>
+          <label class="form__field">
+            <span>Счёт для списания</span>
+            <select id="pay-account"></select>
+          </label>
+          <button type="submit" class="btn btn--accent btn--full">Оплатить</button>
+        </form>
+      </div>
+      <div class="card">
+        <h3>История платежей</h3>
+        <div id="payment-list" class="list"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 «FinBank». Учебный проект по плану: приём вкладов, открытие и ведение счетов, кредитование, переводы денежных средств.</p>
+      <p class="footer__note">Данные хранятся локально в вашем браузере (localStorage) и служат для демонстрации.</p>
+    </div>
+  </footer>
+
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/pages/home.js"></script>
+  <script src="js/pages/payments.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

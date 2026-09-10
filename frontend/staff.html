@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Панель сотрудника — FinBank</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="staff-body">
+
+  <header class="header">
+    <div class="container header__inner">
+      <a class="logo" href="index.html"><span class="logo__icon">🏦</span><span class="logo__bankname">FinBank</span> · CRM</a>
+      <nav class="nav" id="nav">
+        <a class="nav__btn" href="index.html">Сайт для клиентов</a>
+      </nav>
+      <button class="burger" id="burger" aria-label="Меню">☰</button>
+      <div class="userbox">
+        <span class="emp-badge" id="emp-role"></span>
+        <span class="userbox__name" id="emp-name"></span>
+        <button class="btn btn--small userbox__logout" id="btn-logout" type="button">Выйти</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main" id="staff-root">
+    <div id="staff-content"></div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 «FinBank». Внутренняя система сотрудников. Данные хранятся локально в браузере.</p>
+    </div>
+  </footer>
+
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/staff/admin.js"></script>
+  <script src="js/staff/manager.js"></script>
+  <script src="js/staff/cashier.js"></script>
+  <script src="js/staff/credit.js"></script>
+  <script src="js/staff/support.js"></script>
+  <script src="js/staff/security.js"></script>
+  <script src="js/staff/accountant.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

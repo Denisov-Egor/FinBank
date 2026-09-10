@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Карты — FinBank</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a class="logo" href="index.html"><span class="logo__icon">🏦</span><span class="logo__bankname">FinBank</span></a>
+      <nav class="nav" id="nav">
+        <a class="nav__btn" href="index.html">Главная</a>
+        <a class="nav__btn" href="deposits.html">Вклады</a>
+        <a class="nav__btn" href="accounts.html">Счета</a>
+        <a class="nav__btn active" href="cards.html">Карты</a>
+        <a class="nav__btn" href="credits.html">Кредиты</a>
+        <a class="nav__btn" href="transfers.html">Переводы</a>
+        <a class="nav__btn" href="payments.html">Платежи</a>
+      </nav>
+      <button class="burger" id="burger" aria-label="Меню">☰</button>
+      <div class="userbox hidden" id="userbox">
+        <span class="userbox__name" id="userbox-name"></span>
+        <button class="btn btn--small userbox__logout" id="btn-logout" type="button">Выйти</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container main">
+    <h2 class="tab-title">Банковские карты</h2>
+
+    <div class="two-cols">
+      <div class="card">
+        <h3>Оформить новую карту</h3>
+        <form id="card-form" class="form" novalidate>
+          <label class="form__field">
+            <span>Тип карты</span>
+            <select id="card-type"></select>
+          </label>
+          <div class="form__note" id="card-type-desc"></div>
+          <label class="form__field">
+            <span>Счёт для карты (на карте виден его баланс)</span>
+            <select id="card-account"></select>
+          </label>
+          <button type="submit" class="btn btn--accent btn--full">Оформить карту</button>
+        </form>
+      </div>
+      <div class="card">
+        <h3>Мои карты</h3>
+        <div id="card-list" class="cards-grid"></div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 «FinBank». Учебный проект по плану: приём вкладов, открытие и ведение счетов, кредитование, переводы денежных средств.</p>
+      <p class="footer__note">Данные хранятся локально в вашем браузере (localStorage) и служат для демонстрации.</p>
+    </div>
+  </footer>
+
+  <script src="js/utils.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/pages/home.js"></script>
+  <script src="js/pages/cards.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
