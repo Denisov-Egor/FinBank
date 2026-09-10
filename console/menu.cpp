@@ -7,6 +7,7 @@
 
 std::vector<Account> accounts;
 std::vector<Operation> operations;
+std::vector<Deposit> deposits;
 
 std::string inputFullName()
 {
@@ -129,7 +130,9 @@ void showProfile(
 
 void showAccounts()
 {
-  std::cin.ignore();
+  std::cin.ignore(
+  std::numeric_limits<std::streamsize>::max(), '\n'
+  );
  
   Account account;
 
@@ -167,7 +170,9 @@ void showAccounts()
     break;
   }
 
-  std::cin.ignore();
+  std::cin.ignore(
+  std::numeric_limits<std::streamsize>::max(), '\n'
+  );
 
   std::cout << "Введите статус счёта: ";
   std::getline(std::cin, account.status);
@@ -175,6 +180,56 @@ void showAccounts()
   accounts.push_back(account);
 
 }
+
+void depositMenu()
+{
+  int choice;
+
+  do
+  {
+    std::cout <<
+    R"(
+    ========================
+          МОИ ВКЛАДЫ
+    ========================
+
+    1. Открыть вклад
+    2. Показать вклады
+    3. Выбрать вклад
+    4. Вернуться
+
+    ========================
+    Выберите действие:
+    )";
+
+    std::cin >> choice;
+
+    switch (choice)
+    {
+    case 1:
+      createDeposit();
+      break;
+
+    case 2:
+      displayDeposits();
+      break;
+
+    case 3:
+      selectDeposit();
+      break;
+
+    case 4:
+      std::cout << "Возврат в главное меню.\n";
+      break;
+
+    default:
+      std::cout << "Неверный пункт меню.\n";
+      break;
+    }
+
+  } while (choice != 4);
+}
+
 
 void accountMenu()
 {
@@ -555,6 +610,557 @@ void showOperationHistory()
   }
 }
 
+void createDeposit()
+{
+  int accountChoice;
+  double amount;
+  double interestRate;
+  int termMonths;
+
+  if (accounts.empty())
+  {
+  std::cout << "\nУ вас нет банковских счетов.\n";
+  std::cout << "Сначала необходимо открыть счёт.\n";
+  return;
+  }
+
+  std::cout << "\n===== ОТКРЫТИЕ ВКЛАДА =====\n";
+
+  std::cout << "\nДоступные счета:\n";
+
+  for (int i = 0; i < accounts.size(); i++)
+  {
+  std::cout << i + 1 << ". "
+  << accounts[i].accountNumber
+  << " | Баланс: "
+  << accounts[i].balance
+  << " "
+  << accounts[i].currency
+  << "\n";
+  }
+
+  std::cout << "\nВыберите счёт: ";
+  std::cin >> accountChoice;
+
+  if (std::cin.fail())
+  {
+  std::cin.clear();
+  std::cin.ignore
+  (
+  std::numeric_limits<std::streamsize>::max(), '\n'
+  );
+
+  std::cout << "Ошибка: необходимо выбрать номер счёта.\n";
+  return;
+
+  }
+
+  if (accountChoice < 1 || accountChoice > accounts.size())
+  {
+  std::cout << "Ошибка: неверный номер счёта.\n";
+  return;
+  }
+
+  int accountIndex = accountChoice - 1;
+
+  std::cout << "Введите сумму вклада: ";
+  std::cin >> amount;
+
+  if (std::cin.fail())
+  {
+  std::cin.clear();
+  std::cin.ignore(
+  std::numeric_limits<std::streamsize>::max(), '\n'
+  );
+
+  std::cout << "Ошибка: сумма должна быть числом.\n";
+  return;
+
+  }
+
+  if (amount <= 0)
+  {
+  std::cout << "Ошибка: сумма вклада должна быть больше 0.\n";
+  return;
+  }
+
+  if (amount > accounts[accountIndex].balance)
+  {
+  std::cout << "Ошибка: недостаточно средств на счёте.\n";
+  std::cout << "Текущий баланс: "
+  << accounts[accountIndex].balance
+  << "\n";
+  return;
+  }
+
+  std::cout << "Введите процентную ставку: ";
+  std::cin >> interestRate;
+
+  if (std::cin.fail())
+  {
+  std::cin.clear();
+  std::cin.ignore(
+  std::numeric_limits<std::streamsize>::max(), '\n'
+  );
+
+  std::cout << "Ошибка: процентная ставка должна быть числом.\n";
+  return;
+
+  }
+
+  if (interestRate <= 0)
+  {
+  std::cout << "Ошибка: процентная ставка должна быть больше 0.\n";
+  return;
+  }
+
+  std::cout << "Введите срок вклада в месяцах: ";
+  std::cin >> termMonths;
+
+  if (std::cin.fail())
+  {
+  std::cin.clear();
+  std::cin.ignore(
+  std::numeric_limits<std::streamsize>::max(), '\n'
+  );
+
+  std::cout << "Ошибка: срок должен быть числом.\n";
+  return;
+
+  }
+
+  if (termMonths <= 0)
+  {
+  std::cout << "Ошибка: срок вклада должен быть больше 0 месяцев.\n";
+  return;
+  }
+
+  Deposit deposit;
+
+  deposit.depositNumber =
+  "DEP" + std::to_string(deposits.size() + 1);
+
+  deposit.accountNumber = accounts[accountIndex].accountNumber;
+
+  deposit.amount = amount;
+
+  deposit.currency = accounts[accountIndex].currency;
+
+  deposit.interestRate = interestRate;
+
+  deposit.termMonths = termMonths;
+
+  deposit.status = "Активен";
+
+  accounts[accountIndex].balance -= amount;
+
+  deposits.push_back(deposit);
+
+  Operation operation;
+
+  operation.type = "Открытие вклада";
+  operation.accountNumber =
+    accounts[accountIndex].accountNumber;
+  operation.amount = amount;
+  operation.description =
+    "Открытие вклада " + deposit.depositNumber;
+
+  operations.push_back(operation);
+
+  std::cout << "\nВклад успешно открыт.\n";
+
+  std::cout << "Номер вклада: " << deposit.depositNumber << "\n";
+
+  std::cout << "Сумма: " << deposit.amount << " " << deposit.currency << "\n";
+
+  std::cout << "Процентная ставка: " << deposit.interestRate << "%\n";
+
+  std::cout << "Срок: " << deposit.termMonths << " мес.\n";
+
+  std::cout << "Статус: " << deposit.status << "\n";
+
+  std::cout << "Остаток на счёте: " << accounts[accountIndex].balance << " " << accounts[accountIndex].currency << "\n";
+}
+
+void selectDeposit()
+{
+  if (deposits.empty())
+  {
+    std::cout << "\nУ вас нет открытых вкладов.\n";
+    return;
+  }
+
+  int choice;
+
+  std::cout << "\n===== ВЫБОР ВКЛАДА =====\n";
+
+  for (int i = 0; i < deposits.size(); i++)
+  {
+    std::cout << i + 1 << ". "
+              << deposits[i].depositNumber
+              << " | "
+              << deposits[i].amount
+              << " "
+              << deposits[i].currency
+              << " | "
+              << deposits[i].termMonths
+              << " мес."
+              << "\n";
+  }
+
+  std::cout << "\nВыберите вклад: ";
+  std::cin >> choice;
+
+  if (std::cin.fail())
+  {
+    std::cin.clear();
+    std::cin.ignore(
+      std::numeric_limits<std::streamsize>::max(), '\n'
+    );
+
+    std::cout << "Ошибка: необходимо выбрать номер вклада.\n";
+    return;
+  }
+
+  if (choice < 1 || choice > deposits.size())
+  {
+    std::cout << "Ошибка: неверный номер вклада.\n";
+    return;
+  }
+
+  int index = choice - 1;
+
+  selectedDepositMenu(index);
+}
+
+void displayDeposits()
+{
+  std::cout << "\n===== МОИ ВКЛАДЫ =====\n";
+
+  if (deposits.empty())
+  {
+    std::cout << "У вас нет открытых вкладов.\n";
+    return;
+  }
+
+  for (int i = 0; i < deposits.size(); i++)
+  {
+    std::cout << "\nВклад №" << i + 1 << "\n";
+
+    std::cout << "Номер вклада: "
+              << deposits[i].depositNumber
+              << "\n";
+
+    std::cout << "Счёт: "
+              << deposits[i].accountNumber
+              << "\n";
+
+    std::cout << "Сумма: "
+              << deposits[i].amount
+              << " "
+              << deposits[i].currency
+              << "\n";
+
+    std::cout << "Процентная ставка: "
+              << deposits[i].interestRate
+              << "%\n";
+
+    std::cout << "Срок: "
+              << deposits[i].termMonths
+              << " мес.\n";
+
+    std::cout << "Статус: "
+              << deposits[i].status
+              << "\n";
+
+    std::cout << "------------------------\n";
+  }
+}
+
+void selectedDepositMenu(int index)
+{
+  int choice;
+
+  do
+  {
+    std::cout <<
+    R"(
+    ========================
+        ВЫБРАННЫЙ ВКЛАД
+    ========================
+
+    1. Просмотреть вклад
+    2. Пополнить вклад
+    3. Начислить проценты
+    4. Закрыть вклад
+    5. Назад
+
+    ========================
+    Выберите действие:
+    )";
+
+    std::cin >> choice;
+
+    if (std::cin.fail())
+    {
+      std::cin.clear();
+      std::cin.ignore(
+        std::numeric_limits<std::streamsize>::max(), '\n'
+      );
+
+      std::cout << "Ошибка: необходимо ввести число.\n";
+      continue;
+    }
+
+    switch (choice)
+    {
+    case 1:
+      std::cout << "\n===== ИНФОРМАЦИЯ О ВКЛАДЕ =====\n";
+
+      std::cout << "Номер вклада: "
+                << deposits[index].depositNumber
+                << "\n";
+
+      std::cout << "Счёт: "
+                << deposits[index].accountNumber
+                << "\n";
+
+      std::cout << "Сумма: "
+                << deposits[index].amount
+                << " "
+                << deposits[index].currency
+                << "\n";
+
+      std::cout << "Процентная ставка: "
+                << deposits[index].interestRate
+                << "%\n";
+
+      std::cout << "Срок: "
+                << deposits[index].termMonths
+                << " мес.\n";
+
+      std::cout << "Статус: "
+                << deposits[index].status
+                << "\n";
+
+      break;
+
+    case 2:
+    {
+      double amount;
+      int accountIndex = -1;
+
+      if (deposits[index].status == "Закрыт")
+      {
+        std::cout << "Ошибка: вклад уже закрыт.\n";
+        break;
+      }
+
+      for (int i = 0; i < accounts.size(); i++)
+      {
+        if (accounts[i].accountNumber ==
+            deposits[index].accountNumber)
+        {
+          accountIndex = i;
+          break;
+        }
+      }
+
+      if (accountIndex == -1)
+      {
+        std::cout << "Ошибка: банковский счёт вклада не найден.\n";
+        break;
+      }
+
+      std::cout << "\n===== ПОПОЛНЕНИЕ ВКЛАДА =====\n";
+
+      std::cout << "Текущая сумма вклада: "
+                << deposits[index].amount
+                << " "
+                << deposits[index].currency
+                << "\n";
+
+      std::cout << "Баланс счёта: "
+                << accounts[accountIndex].balance
+                << " "
+                << accounts[accountIndex].currency
+                << "\n";
+
+      std::cout << "Введите сумму пополнения: ";
+      std::cin >> amount;
+
+      if (std::cin.fail())
+      {
+        std::cin.clear();
+        std::cin.ignore(
+          std::numeric_limits<std::streamsize>::max(), '\n'
+        );
+
+        std::cout << "Ошибка: сумма должна быть числом.\n";
+        break;
+      }
+
+      if (amount <= 0)
+      {
+        std::cout << "Ошибка: сумма пополнения должна быть больше 0.\n";
+        break;
+      }
+
+      if (amount > accounts[accountIndex].balance)
+      {
+        std::cout << "Ошибка: недостаточно средств на счёте.\n";
+        break;
+      }
+
+      accounts[accountIndex].balance -= amount;
+      deposits[index].amount += amount;
+
+      Operation operation;
+
+      operation.type = "Пополнение вклада";
+      operation.accountNumber =
+        accounts[accountIndex].accountNumber;
+      operation.amount = amount;
+      operation.description =
+        "Пополнение вклада " +
+        deposits[index].depositNumber;
+
+      operations.push_back(operation);
+
+      std::cout << "\nВклад успешно пополнен.\n";
+
+      std::cout << "Новая сумма вклада: "
+                << deposits[index].amount
+                << " "
+                << deposits[index].currency
+                << "\n";
+
+      std::cout << "Новый баланс счёта: "
+                << accounts[accountIndex].balance
+                << " "
+                << accounts[accountIndex].currency
+                << "\n";
+
+      break;
+    }
+
+    case 3:
+    {
+      if (deposits[index].status == "Закрыт")
+      {
+        std::cout << "Ошибка: нельзя начислить проценты по закрытому вкладу.\n";
+        break;
+      }
+
+      double interest;
+
+      interest =
+        deposits[index].amount *
+        deposits[index].interestRate / 100;
+
+      deposits[index].amount += interest;
+
+      Operation operation;
+
+      operation.type = "Начисление процентов";
+      operation.accountNumber =
+        deposits[index].accountNumber;
+      operation.amount = interest;
+      operation.description =
+        "Начисление процентов по вкладу " +
+        deposits[index].depositNumber;
+
+      operations.push_back(operation);
+
+      std::cout << "\n===== НАЧИСЛЕНИЕ ПРОЦЕНТОВ =====\n";
+
+      std::cout << "Начисленные проценты: "
+                << interest
+                << " "
+                << deposits[index].currency
+                << "\n";
+
+      std::cout << "Новая сумма вклада: "
+                << deposits[index].amount
+                << " "
+                << deposits[index].currency
+                << "\n";
+
+      break;
+    }
+
+    case 4:
+    {
+      int accountIndex = -1;
+
+      if (deposits[index].status == "Закрыт")
+      {
+        std::cout << "Ошибка: вклад уже закрыт.\n";
+        break;
+      }
+
+      for (int i = 0; i < accounts.size(); i++)
+      {
+        if (accounts[i].accountNumber ==
+            deposits[index].accountNumber)
+        {
+          accountIndex = i;
+          break;
+        }
+      }
+
+      if (accountIndex == -1)
+      {
+        std::cout << "Ошибка: банковский счёт вклада не найден.\n";
+        break;
+      }
+
+      double amount = deposits[index].amount;
+
+      accounts[accountIndex].balance += amount;
+
+      deposits[index].status = "Закрыт";
+
+      Operation operation;
+
+      operation.type = "Закрытие вклада";
+      operation.accountNumber =
+        accounts[accountIndex].accountNumber;
+      operation.amount = amount;
+      operation.description =
+        "Закрытие вклада " +
+        deposits[index].depositNumber;
+
+      operations.push_back(operation);
+
+      std::cout << "\nВклад успешно закрыт.\n";
+
+      std::cout << "Возвращено на счёт: "
+                << amount
+                << " "
+                << deposits[index].currency
+                << "\n";
+
+      std::cout << "Новый баланс счёта: "
+                << accounts[accountIndex].balance
+                << " "
+                << accounts[accountIndex].currency
+                << "\n";
+
+      break;
+    }
+
+    case 5:
+      std::cout << "Возврат.\n";
+      break;
+
+    default:
+      std::cout << "Неверный пункт меню.\n";
+      break;
+    }
+
+  } while (choice != 5);
+}
 
 void showMenu(
   const std::string& fullName,
@@ -614,7 +1220,7 @@ void showMenu(
         break;
 
       case 3:
-        std::cout << "Открываем раздел «Вклады».\n";
+        depositMenu();
         break;
 
       case 4:
