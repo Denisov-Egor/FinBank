@@ -38,4 +38,12 @@ struct Account
   std::string status;
 };
 
+struct Operation
+{
+  std::string type;
+  std::string accountNumber;
+  double amount;
+  std::string description;
+};
+
 #endif

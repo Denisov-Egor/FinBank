@@ -6,6 +6,7 @@
 #include "menu.h"
 
 std::vector<Account> accounts;
+std::vector<Operation> operations;
 
 std::string inputFullName()
 {
@@ -338,8 +339,14 @@ void selectedAccountMenu(int index)
 
       accounts[index].balance += amount;
 
-      std::cout << "Счёт успешно пополнен.\n";
-      std::cout << "Новый баланс: " << accounts[index].balance << "\n";
+     Operation operation;
+
+      operation.type = "Пополнение";
+      operation.accountNumber = accounts[index].accountNumber;
+      operation.amount = amount;
+      operation.description = "Пополнение банковского счёта";
+
+      operations.push_back(operation);
       break;
     }
 
@@ -377,10 +384,17 @@ void selectedAccountMenu(int index)
 
       accounts[index].balance -= amount;
 
-      std::cout << "Деньги успешно сняты.\n";
-      std::cout << "Новый баланс: "
-                << accounts[index].balance << "\n";
+      Operation operation;
 
+      operation.type = "Снятие";
+      operation.accountNumber = accounts[index].accountNumber;
+      operation.amount = amount;
+      operation.description = "Снятие денежных средств";
+
+      operations.push_back(operation);
+
+      std::cout << "Деньги успешно сняты.\n";
+      std::cout << "Новый баланс: " << accounts[index].balance << "\n";
       break;
     }
 
@@ -482,6 +496,15 @@ void transferMoney()
   accounts[senderIndex].balance -= amount;
   accounts[receiverIndex].balance += amount;
 
+  Operation operation;
+
+  operation.type = "Перевод";
+  operation.accountNumber = accounts[senderIndex].accountNumber;
+  operation.amount = amount;
+  operation.description = "Перевод на счёт " + accounts[receiverIndex].accountNumber;
+
+  operations.push_back(operation);
+
   std::cout << "\nПеревод успешно выполнен.\n";
 
   std::cout << "Счёт отправителя: "
@@ -504,6 +527,34 @@ void transferMoney()
             << accounts[receiverIndex].balance
             << "\n";
 }
+
+void showOperationHistory()
+{
+  std::cout << "\n===== ИСТОРИЯ ОПЕРАЦИЙ =====\n";
+
+  if (operations.empty())
+  {
+  std::cout << "История операций пуста.\n";
+  return;
+  }
+
+  for (int i = 0; i < operations.size(); i++)
+  {
+  std::cout << "\nОперация №" << i + 1 << "\n";
+  std::cout << "Тип: "
+  << operations[i].type
+  << "\n";
+
+  std::cout << "Счёт: " << operations[i].accountNumber << "\n";
+
+  std::cout << "Сумма: " << operations[i].amount << "\n";
+
+  std::cout << "Описание: " << operations[i].description << "\n";
+
+  std::cout << "------------------------\n";
+  }
+}
+
 
 void showMenu(
   const std::string& fullName,
@@ -575,7 +626,7 @@ void showMenu(
         break;
 
       case 6:
-        std::cout << "Открываем раздел «История операций».\n";
+        showOperationHistory();
         break;
 
       case 7:
