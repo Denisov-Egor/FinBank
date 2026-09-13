@@ -32,6 +32,21 @@ struct Deposit
     std::string status;
 };
 
+struct Credit
+{
+    std::string creditNumber;
+    std::string accountNumber;
+
+    double amount;
+    double remainingAmount;
+    double interestRate;
+
+    int termMonths;
+
+    std::string purpose;
+    std::string status;
+};
+
 extern std::vector<Account> accounts;
 extern std::vector<Operation> operations;
 extern std::vector<Deposit> deposits;
@@ -62,6 +77,14 @@ void displayDeposits();
 void selectDeposit();
 void selectedDepositMenu(int index);
 void depositMenu();
+
+void creditMenu();
+void createCredit();
+void displayCredits();
+void selectCredit();
+void selectedCreditMenu(int index);
+void payCredit(int index);
+void closeCredit(int index);
 
 void showMenu(
     const std::string& fullName,

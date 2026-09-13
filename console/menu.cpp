@@ -8,6 +8,7 @@
 std::vector<Account> accounts;
 std::vector<Operation> operations;
 std::vector<Deposit> deposits;
+std::vector<Credit> credits;
 
 std::string inputFullName()
 {
@@ -1162,6 +1163,636 @@ void selectedDepositMenu(int index)
   } while (choice != 5);
 }
 
+void creditMenu()
+{
+    int choice;
+
+    do
+    {
+        std::cout <<
+        R"(
+    ========================
+          МОИ КРЕДИТЫ
+    ========================
+
+    1. Оформить кредит
+    2. Показать кредиты
+    3. Выбрать кредит
+    4. Вернуться
+
+    ========================
+    Выберите действие:
+    )";
+
+        std::cin >> choice;
+
+        if (std::cin.fail())
+        {
+            std::cin.clear();
+            std::cin.ignore(
+                std::numeric_limits<std::streamsize>::max(),
+                '\n'
+            );
+
+            std::cout << "Ошибка: необходимо ввести число.\n";
+            continue;
+        }
+
+        switch (choice)
+        {
+        case 1:
+            createCredit();
+            break;
+
+        case 2:
+            displayCredits();
+            break;
+
+        case 3:
+            selectCredit();
+            break;
+
+        case 4:
+            std::cout << "Возврат в главное меню.\n";
+            break;
+
+        default:
+            std::cout << "Неверный пункт меню.\n";
+            break;
+        }
+
+    } while (choice != 4);
+}
+
+void createCredit()
+{
+    if (accounts.empty())
+    {
+        std::cout << "\nУ вас нет банковских счетов.\n";
+        std::cout << "Сначала необходимо открыть счёт.\n";
+        return;
+    }
+
+    int accountChoice;
+    double amount;
+    double interestRate;
+    int termMonths;
+    std::string purpose;
+
+    std::cout << "\n===== ОФОРМЛЕНИЕ КРЕДИТА =====\n";
+
+    std::cout << "\nДоступные счета:\n";
+
+    for (int i = 0; i < accounts.size(); i++)
+    {
+        std::cout << i + 1 << ". "
+                  << accounts[i].accountNumber
+                  << " | Баланс: "
+                  << accounts[i].balance
+                  << " "
+                  << accounts[i].currency
+                  << "\n";
+    }
+
+    std::cout << "\nВыберите счёт для получения кредита: ";
+    std::cin >> accountChoice;
+
+    if (std::cin.fail())
+    {
+        std::cin.clear();
+        std::cin.ignore(
+            std::numeric_limits<std::streamsize>::max(),
+            '\n'
+        );
+
+        std::cout << "Ошибка: необходимо выбрать номер счёта.\n";
+        return;
+    }
+
+    if (accountChoice < 1 ||
+        accountChoice > accounts.size())
+    {
+        std::cout << "Ошибка: неверный номер счёта.\n";
+        return;
+    }
+
+    int accountIndex = accountChoice - 1;
+
+    std::cout << "Введите сумму кредита: ";
+    std::cin >> amount;
+
+    if (std::cin.fail())
+    {
+        std::cin.clear();
+        std::cin.ignore(
+            std::numeric_limits<std::streamsize>::max(),
+            '\n'
+        );
+
+        std::cout << "Ошибка: сумма должна быть числом.\n";
+        return;
+    }
+
+    if (amount <= 0)
+    {
+        std::cout << "Ошибка: сумма кредита должна быть больше 0.\n";
+        return;
+    }
+
+    std::cout << "Введите процентную ставку: ";
+    std::cin >> interestRate;
+
+    if (std::cin.fail())
+    {
+        std::cin.clear();
+        std::cin.ignore(
+            std::numeric_limits<std::streamsize>::max(),
+            '\n'
+        );
+
+        std::cout << "Ошибка: процентная ставка должна быть числом.\n";
+        return;
+    }
+
+    if (interestRate <= 0)
+    {
+        std::cout << "Ошибка: процентная ставка должна быть больше 0.\n";
+        return;
+    }
+
+    std::cout << "Введите срок кредита в месяцах: ";
+    std::cin >> termMonths;
+
+    if (std::cin.fail())
+    {
+        std::cin.clear();
+        std::cin.ignore(
+            std::numeric_limits<std::streamsize>::max(),
+            '\n'
+        );
+
+        std::cout << "Ошибка: срок должен быть числом.\n";
+        return;
+    }
+
+    if (termMonths <= 0)
+    {
+        std::cout << "Ошибка: срок кредита должен быть больше 0 месяцев.\n";
+        return;
+    }
+
+    std::cin.ignore(
+        std::numeric_limits<std::streamsize>::max(),
+        '\n'
+    );
+
+    std::cout << "Введите назначение кредита: ";
+    std::getline(std::cin, purpose);
+
+    if (purpose.empty())
+    {
+        purpose = "Не указано";
+    }
+
+    Credit credit;
+
+    credit.creditNumber =
+        "CR" + std::to_string(credits.size() + 1);
+
+    credit.accountNumber =
+        accounts[accountIndex].accountNumber;
+
+    credit.amount = amount;
+
+    credit.remainingAmount = amount;
+
+    credit.interestRate = interestRate;
+
+    credit.termMonths = termMonths;
+
+    credit.purpose = purpose;
+
+    credit.status = "Одобрен";
+
+    /*
+        После одобрения кредита деньги
+        зачисляются на выбранный банковский счёт.
+    */
+
+    accounts[accountIndex].balance += amount;
+
+    credits.push_back(credit);
+
+    Operation operation;
+
+    operation.type = "Получение кредита";
+
+    operation.accountNumber =
+        accounts[accountIndex].accountNumber;
+
+    operation.amount = amount;
+
+    operation.description =
+        "Получение кредита " +
+        credit.creditNumber;
+
+    operations.push_back(operation);
+
+    std::cout << "\n===== КРЕДИТ ОФОРМЛЕН =====\n";
+
+    std::cout << "Номер кредита: "
+              << credit.creditNumber
+              << "\n";
+
+    std::cout << "Сумма кредита: "
+              << credit.amount
+              << " "
+              << accounts[accountIndex].currency
+              << "\n";
+
+    std::cout << "Процентная ставка: "
+              << credit.interestRate
+              << "%\n";
+
+    std::cout << "Срок: "
+              << credit.termMonths
+              << " мес.\n";
+
+    std::cout << "Назначение: "
+              << credit.purpose
+              << "\n";
+
+    std::cout << "Статус: "
+              << credit.status
+              << "\n";
+
+    std::cout << "Задолженность: "
+              << credit.remainingAmount
+              << " "
+              << accounts[accountIndex].currency
+              << "\n";
+
+    std::cout << "Баланс счёта после получения кредита: "
+              << accounts[accountIndex].balance
+              << " "
+              << accounts[accountIndex].currency
+              << "\n";
+}
+
+void displayCredits()
+{
+    std::cout << "\n===== МОИ КРЕДИТЫ =====\n";
+
+    if (credits.empty())
+    {
+        std::cout << "У вас нет кредитов.\n";
+        return;
+    }
+
+    for (int i = 0; i < credits.size(); i++)
+    {
+        std::cout << "\nКредит №" << i + 1 << "\n";
+
+        std::cout << "Номер кредита: "
+                  << credits[i].creditNumber
+                  << "\n";
+
+        std::cout << "Счёт: "
+                  << credits[i].accountNumber
+                  << "\n";
+
+        std::cout << "Сумма кредита: "
+                  << credits[i].amount
+                  << "\n";
+
+        std::cout << "Остаток задолженности: "
+                  << credits[i].remainingAmount
+                  << "\n";
+
+        std::cout << "Процентная ставка: "
+                  << credits[i].interestRate
+                  << "%\n";
+
+        std::cout << "Срок: "
+                  << credits[i].termMonths
+                  << " мес.\n";
+
+        std::cout << "Назначение: "
+                  << credits[i].purpose
+                  << "\n";
+
+        std::cout << "Статус: "
+                  << credits[i].status
+                  << "\n";
+
+        std::cout << "------------------------\n";
+    }
+}
+
+void selectCredit()
+{
+    if (credits.empty())
+    {
+        std::cout << "\nУ вас нет кредитов.\n";
+        return;
+    }
+
+    int choice;
+
+    std::cout << "\n===== ВЫБОР КРЕДИТА =====\n";
+
+    for (int i = 0; i < credits.size(); i++)
+    {
+        std::cout << i + 1 << ". "
+                  << credits[i].creditNumber
+                  << " | Остаток: "
+                  << credits[i].remainingAmount
+                  << " | Статус: "
+                  << credits[i].status
+                  << "\n";
+    }
+
+    std::cout << "\nВыберите кредит: ";
+    std::cin >> choice;
+
+    if (std::cin.fail())
+    {
+        std::cin.clear();
+        std::cin.ignore(
+            std::numeric_limits<std::streamsize>::max(),
+            '\n'
+        );
+
+        std::cout << "Ошибка: необходимо ввести номер кредита.\n";
+        return;
+    }
+
+    if (choice < 1 || choice > credits.size())
+    {
+        std::cout << "Ошибка: неверный номер кредита.\n";
+        return;
+    }
+
+    int index = choice - 1;
+
+    selectedCreditMenu(index);
+}
+
+void selectedCreditMenu(int index)
+{
+    int choice;
+
+    do
+    {
+        std::cout <<
+        R"(
+    ========================
+        ВЫБРАННЫЙ КРЕДИТ
+    ========================
+
+    1. Просмотреть кредит
+    2. Внести платёж
+    3. Закрыть кредит
+    4. Назад
+
+    ========================
+    Выберите действие:
+    )";
+
+        std::cin >> choice;
+
+        if (std::cin.fail())
+        {
+            std::cin.clear();
+            std::cin.ignore(
+                std::numeric_limits<std::streamsize>::max(),
+                '\n'
+            );
+
+            std::cout << "Ошибка: необходимо ввести число.\n";
+            continue;
+        }
+
+        switch (choice)
+        {
+        case 1:
+        {
+            std::cout << "\n===== ИНФОРМАЦИЯ О КРЕДИТЕ =====\n";
+
+            std::cout << "Номер кредита: "
+                      << credits[index].creditNumber
+                      << "\n";
+
+            std::cout << "Счёт: "
+                      << credits[index].accountNumber
+                      << "\n";
+
+            std::cout << "Сумма кредита: "
+                      << credits[index].amount
+                      << "\n";
+
+            std::cout << "Остаток задолженности: "
+                      << credits[index].remainingAmount
+                      << "\n";
+
+            std::cout << "Процентная ставка: "
+                      << credits[index].interestRate
+                      << "%\n";
+
+            std::cout << "Срок: "
+                      << credits[index].termMonths
+                      << " мес.\n";
+
+            std::cout << "Назначение: "
+                      << credits[index].purpose
+                      << "\n";
+
+            std::cout << "Статус: "
+                      << credits[index].status
+                      << "\n";
+
+            break;
+        }
+
+        case 2:
+            payCredit(index);
+            break;
+
+        case 3:
+            closeCredit(index);
+            break;
+
+        case 4:
+            std::cout << "Возврат.\n";
+            break;
+
+        default:
+            std::cout << "Неверный пункт меню.\n";
+            break;
+        }
+
+    } while (choice != 4);
+}
+
+void payCredit(int index)
+{
+    if (credits[index].status == "Закрыт")
+    {
+        std::cout << "Ошибка: кредит уже закрыт.\n";
+        return;
+    }
+
+    int accountIndex = -1;
+
+    for (int i = 0; i < accounts.size(); i++)
+    {
+        if (accounts[i].accountNumber ==
+            credits[index].accountNumber)
+        {
+            accountIndex = i;
+            break;
+        }
+    }
+
+    if (accountIndex == -1)
+    {
+        std::cout << "Ошибка: банковский счёт не найден.\n";
+        return;
+    }
+
+    double amount;
+
+    std::cout << "\n===== ПОГАШЕНИЕ КРЕДИТА =====\n";
+
+    std::cout << "Остаток задолженности: "
+              << credits[index].remainingAmount
+              << "\n";
+
+    std::cout << "Баланс счёта: "
+              << accounts[accountIndex].balance
+              << "\n";
+
+    std::cout << "Введите сумму платежа: ";
+    std::cin >> amount;
+
+    if (std::cin.fail())
+    {
+        std::cin.clear();
+        std::cin.ignore(
+            std::numeric_limits<std::streamsize>::max(),
+            '\n'
+        );
+
+        std::cout << "Ошибка: сумма должна быть числом.\n";
+        return;
+    }
+
+    if (amount <= 0)
+    {
+        std::cout << "Ошибка: сумма платежа должна быть больше 0.\n";
+        return;
+    }
+
+    if (amount > accounts[accountIndex].balance)
+    {
+        std::cout << "Ошибка: недостаточно средств на счёте.\n";
+        return;
+    }
+
+    if (amount > credits[index].remainingAmount)
+    {
+        amount = credits[index].remainingAmount;
+
+        std::cout << "Сумма платежа превышала задолженность.\n";
+        std::cout << "Будет списано только: "
+                  << amount
+                  << "\n";
+    }
+
+    accounts[accountIndex].balance -= amount;
+
+    credits[index].remainingAmount -= amount;
+
+    Operation operation;
+
+    operation.type = "Погашение кредита";
+
+    operation.accountNumber =
+        accounts[accountIndex].accountNumber;
+
+    operation.amount = amount;
+
+    operation.description =
+        "Погашение кредита " +
+        credits[index].creditNumber;
+
+    operations.push_back(operation);
+
+    std::cout << "\nПлатёж успешно выполнен.\n";
+
+    std::cout << "Сумма платежа: "
+              << amount
+              << "\n";
+
+    std::cout << "Остаток задолженности: "
+              << credits[index].remainingAmount
+              << "\n";
+
+    std::cout << "Баланс счёта: "
+              << accounts[accountIndex].balance
+              << "\n";
+
+    if (credits[index].remainingAmount <= 0)
+    {
+        credits[index].remainingAmount = 0;
+        credits[index].status = "Погашен";
+
+        std::cout << "\nКредит полностью погашен.\n";
+    }
+}
+
+void closeCredit(int index)
+{
+    if (credits[index].status == "Закрыт")
+    {
+        std::cout << "Кредит уже закрыт.\n";
+        return;
+    }
+
+    if (credits[index].remainingAmount > 0)
+    {
+        std::cout
+            << "Нельзя закрыть кредит.\n"
+            << "Остаток задолженности: "
+            << credits[index].remainingAmount
+            << "\n";
+
+        std::cout
+            << "Сначала необходимо полностью погасить задолженность.\n";
+
+        return;
+    }
+
+    credits[index].status = "Закрыт";
+
+    Operation operation;
+
+    operation.type = "Закрытие кредита";
+
+    operation.accountNumber =
+        credits[index].accountNumber;
+
+    operation.amount = 0;
+
+    operation.description =
+        "Закрытие кредита " +
+        credits[index].creditNumber;
+
+    operations.push_back(operation);
+
+    std::cout << "\nКредит успешно закрыт.\n";
+}
+
 void showMenu(
   const std::string& fullName,
   int age,
@@ -1224,7 +1855,7 @@ void showMenu(
         break;
 
       case 4:
-        std::cout << "Открываем раздел «Кредиты».\n";
+        creditMenu();
         break;
 
       case 5:
