@@ -311,7 +311,7 @@ void selectAccount()
     return;
   }
 
-  for (int i = 0; i < accounts.size(); i++)
+  for (size_t i = 0; i < accounts.size(); i++)
   {
     std::cout << i + 1 << ". ";
     std::cout << accounts[i].accountNumber << "\n";
@@ -320,7 +320,7 @@ void selectAccount()
   std::cout << "Выберите счёт: ";
   std::cin >> choice;
 
-  if (choice < 1 || choice > accounts.size())
+  if (choice < 1 || static_cast<size_t>(choice) > accounts.size())
   {
     std::cout << "Неверный номер счёта.\n";
     return;
@@ -482,7 +482,7 @@ void transferMoney()
 
   std::cout << "\nДоступные счета:\n";
 
-  for (int i = 0; i < accounts.size(); i++)
+  for (size_t i = 0; i < accounts.size(); i++)
   {
     std::cout << i + 1 << ". "
               << accounts[i].accountNumber
@@ -496,7 +496,7 @@ void transferMoney()
   std::cout << "\nВыберите счёт отправителя: ";
   std::cin >> senderChoice;
 
-  if (senderChoice < 1 || senderChoice > accounts.size())
+  if (senderChoice < 1 || static_cast<size_t>(senderChoice) > accounts.size())
   {
     std::cout << "Ошибка: неверный счёт отправителя.\n";
     return;
@@ -505,7 +505,7 @@ void transferMoney()
   std::cout << "Выберите счёт получателя: ";
   std::cin >> receiverChoice;
 
-  if (receiverChoice < 1 || receiverChoice > accounts.size())
+  if (receiverChoice < 1 || static_cast<size_t>(receiverChoice) > accounts.size())
   {
     std::cout << "Ошибка: неверный счёт получателя.\n";
     return;
@@ -594,7 +594,7 @@ void showOperationHistory()
   return;
   }
 
-  for (int i = 0; i < operations.size(); i++)
+  for (size_t i = 0; i < operations.size(); i++)
   {
   std::cout << "\nОперация №" << i + 1 << "\n";
   std::cout << "Тип: "
@@ -629,7 +629,7 @@ void createDeposit()
 
   std::cout << "\nДоступные счета:\n";
 
-  for (int i = 0; i < accounts.size(); i++)
+  for (size_t i = 0; i < accounts.size(); i++)
   {
   std::cout << i + 1 << ". "
   << accounts[i].accountNumber
@@ -656,7 +656,7 @@ void createDeposit()
 
   }
 
-  if (accountChoice < 1 || accountChoice > accounts.size())
+  if (accountChoice < 1 || static_cast<size_t>(accountChoice) > accounts.size())
   {
   std::cout << "Ошибка: неверный номер счёта.\n";
   return;
@@ -795,7 +795,7 @@ void selectDeposit()
 
   std::cout << "\n===== ВЫБОР ВКЛАДА =====\n";
 
-  for (int i = 0; i < deposits.size(); i++)
+  for (size_t i = 0; i < deposits.size(); i++)
   {
     std::cout << i + 1 << ". "
               << deposits[i].depositNumber
@@ -823,7 +823,7 @@ void selectDeposit()
     return;
   }
 
-  if (choice < 1 || choice > deposits.size())
+  if (choice < 1 || static_cast<size_t>(choice) > deposits.size())
   {
     std::cout << "Ошибка: неверный номер вклада.\n";
     return;
@@ -844,7 +844,7 @@ void displayDeposits()
     return;
   }
 
-  for (int i = 0; i < deposits.size(); i++)
+  for (size_t i = 0; i < deposits.size(); i++)
   {
     std::cout << "\nВклад №" << i + 1 << "\n";
 
@@ -957,7 +957,7 @@ void selectedDepositMenu(int index)
         break;
       }
 
-      for (int i = 0; i < accounts.size(); i++)
+      for (size_t i = 0; i < accounts.size(); i++)
       {
         if (accounts[i].accountNumber ==
             deposits[index].accountNumber)
@@ -1100,7 +1100,7 @@ void selectedDepositMenu(int index)
         break;
       }
 
-      for (int i = 0; i < accounts.size(); i++)
+      for (size_t i = 0; i < accounts.size(); i++)
       {
         if (accounts[i].accountNumber ==
             deposits[index].accountNumber)
@@ -1243,7 +1243,7 @@ void createCredit()
 
     std::cout << "\nДоступные счета:\n";
 
-    for (int i = 0; i < accounts.size(); i++)
+    for (size_t i = 0; i < accounts.size(); i++)
     {
         std::cout << i + 1 << ". "
                   << accounts[i].accountNumber
@@ -1270,7 +1270,7 @@ void createCredit()
     }
 
     if (accountChoice < 1 ||
-        accountChoice > accounts.size())
+        static_cast<size_t>(accountChoice) > accounts.size())
     {
         std::cout << "Ошибка: неверный номер счёта.\n";
         return;
@@ -1449,7 +1449,7 @@ void displayCredits()
         return;
     }
 
-    for (int i = 0; i < credits.size(); i++)
+    for (size_t i = 0; i < credits.size(); i++)
     {
         std::cout << "\nКредит №" << i + 1 << "\n";
 
@@ -1501,7 +1501,7 @@ void selectCredit()
 
     std::cout << "\n===== ВЫБОР КРЕДИТА =====\n";
 
-    for (int i = 0; i < credits.size(); i++)
+    for (size_t i = 0; i < credits.size(); i++)
     {
         std::cout << i + 1 << ". "
                   << credits[i].creditNumber
@@ -1527,7 +1527,7 @@ void selectCredit()
         return;
     }
 
-    if (choice < 1 || choice > credits.size())
+    if (choice < 1 || static_cast<size_t>(choice) > credits.size())
     {
         std::cout << "Ошибка: неверный номер кредита.\n";
         return;
@@ -1644,7 +1644,7 @@ void payCredit(int index)
 
     int accountIndex = -1;
 
-    for (int i = 0; i < accounts.size(); i++)
+    for (size_t i = 0; i < accounts.size(); i++)
     {
         if (accounts[i].accountNumber ==
             credits[index].accountNumber)
