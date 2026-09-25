@@ -1,18 +1,35 @@
 #include <iostream>
 #include <string>
 
-#include "menu.h"
+#include "menu/MainMenu.h"
+#include "utils/Input.h"
+
 
 int main()
 {
-  std::cout << "========================\n";
-  std::cout << "        FINBANK\n";
-  std::cout << "========================\n\n";
 
-  std::string fullName = inputFullName();
-  int age = inputAge();
-  std::string phone = inputPhone();
-  std::string email = inputEmail();
+    std::cout
+    << "========================\n"
+    << "        FINBANK\n"
+    << "========================\n\n";
 
-  showMenu(fullName, age, phone, email);
+
+    std::string fullName = inputFullName();
+
+    int age = inputAge();
+
+    std::string phone = inputPhone();
+
+    std::string email = inputEmail();
+
+
+    showMenu(
+        fullName,
+        age,
+        phone,
+        email
+    );
+
+
+    return 0;
 }
